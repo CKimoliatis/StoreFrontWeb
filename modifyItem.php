@@ -1,36 +1,29 @@
 <?php
 require_once 'dbh.inc.php';
 
-// Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve the form data
     $item_id = $_POST["item_id"];
     $name = $_POST["name"];
     $price = $_POST["price"];
     $quantity = $_POST["quantity"];
 
-    // Prepare the SQL statement
     $stmt = $conn->prepare("UPDATE entity_item SET name=?, price=?, quantity=? WHERE item_id=?");
     $stmt->bind_param("siii", $name, $price, $quantity, $item_id);
 
-    // Execute the statement
     if ($stmt->execute()) {
         echo "Item modified successfully.";
     } else {
         echo "Error modifying item: " . $conn->error;
     }
 
-    // Close the statement
     $stmt->close();
 }
 
-// Retrieve all items
 $stmt = $conn->prepare("SELECT * FROM entity_item");
 $stmt->execute();
 $result = $stmt->get_result();
 $items = $result->fetch_all(MYSQLI_ASSOC);
 
-// Close the statement
 $stmt->close();
 
 if (isset($_POST['return'])) {
